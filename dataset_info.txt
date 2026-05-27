@@ -1,0 +1,15 @@
+Dataset: Telco Customer Churn Dataset
+
+The dataset contains customer demographic information, account details, billing information, and service usage patterns used for churn prediction.
+
+Target Variable:
+- Churn (Yes/No)
+
+Important Features:
+- Tenure
+- Monthly Charges
+- Total Charges
+- Internet Service
+- Contract Type
+- Payment Method
+- Tech Support
