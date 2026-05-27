@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Churn Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Customer Churn Prediction</h2>
+        <form id="predict-form">
+            <div class="form-group">
+                <label for="tenure">Tenure (months):</label>
+                <input type="number" step="0.01" class="form-control" id="tenure" placeholder="e.g. 12" required>
+            </div>
+            <div class="form-group">
+                <label for="monthly_charges">Monthly Charges:</label>
+                <input type="number" step="0.01" class="form-control" id="monthly_charges" placeholder="e.g. 65.5" required>
+            </div>
+            <div class="form-group">
+                <label for="total_charges">Total Charges:</label>
+                <input type="number" step="0.01" class="form-control" id="total_charges" placeholder="e.g. 786.0" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Predict</button>
+        </form>
+        <div id="result" class="result mt-4">
+            </div>
+    </div>
+
+    <script>
+        document.getElementById('predict-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get the values from the input fields
+            const tenure = document.getElementById('tenure').value;
+            const monthly_charges = document.getElementById('monthly_charges').value;
+            const total_charges = document.getElementById('total_charges').value;
+            
+            // Create a JSON object with the data
+            const data = {
+                tenure: tenure,
+                monthly_charges: monthly_charges,
+                total_charges: total_charges
+            };
+
+            // Send the data to the Flask backend
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-success">Prediction: ${data.prediction}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div class="alert alert-danger">An error occurred while fetching the prediction.</div>`;
+            });
+        });
+    </script>
+</body>
+</html>
